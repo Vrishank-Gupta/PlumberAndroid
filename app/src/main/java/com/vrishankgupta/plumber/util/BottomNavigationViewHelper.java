@@ -37,20 +37,20 @@ public class BottomNavigationViewHelper {
                         context.startActivity(intent1);
                         break;
 
-                    case R.id.ic_booking:
-                        context.startActivity(new Intent(context, BookingActivity.class)); //act1
-                        break;
+//                    case R.id.ic_booking:
+//                        context.startActivity(new Intent(context, MainActivtity.class)); //act1
+//                        break;
                     case R.id.ic_account:
                         context.startActivity(new Intent(context, MainActivtity.class)); //act2..
                         break;
 
-                    case R.id.ic_contact:
-                        context.startActivity(new Intent(context, BookingActivity.class));
-                        break;
-
-                    case R.id.ic_voucher:
-                        context.startActivity(new Intent(context, BookingActivity.class));
-                        break;
+//                    case R.id.ic_contact:
+//                        context.startActivity(new Intent(context, BookingActivity.class));
+//                        break;
+//
+//                    case R.id.ic_voucher:
+//                        context.startActivity(new Intent(context, BookingActivity.class));
+//                        break;
                 }
 
 

@@ -87,7 +87,7 @@ public class MainActivtity extends FragmentActivity implements OnMapReadyCallbac
         Log.d("HomeActivity", "setupBottomNavigationView: setting up botNavView");
         BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bnve);
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(getApplicationContext(),bottomNavigationViewEx);
+        BottomNavigationViewHelper.enableNavigation(MainActivtity.this,bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();
         MenuItem menuItem = menu.getItem(2);
         menuItem.setChecked(true);
