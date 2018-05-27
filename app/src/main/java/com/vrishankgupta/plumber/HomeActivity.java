@@ -9,8 +9,14 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+import com.vrishankgupta.plumber.util.BottomNavigationViewHelper;
 
 import mehdi.sakout.fancybuttons.FancyButton;
 
@@ -27,6 +33,7 @@ public class HomeActivity extends AppCompatActivity {
 
         btnLocation.setIconResource(R.drawable.ic_location);
         customLoc.setIconResource(R.drawable.ic_custom);
+        setupBottomNavigationView();
 
         btnLocation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,6 +65,16 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+    private void setupBottomNavigationView()
+    {
+        Log.d("HomeActivity", "setupBottomNavigationView: setting up botNavView");
+        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bnve);
+        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
+        BottomNavigationViewHelper.enableNavigation(getApplicationContext(),bottomNavigationViewEx);
+        Menu menu = bottomNavigationViewEx.getMenu();
+        MenuItem menuItem = menu.getItem(0);
+        menuItem.setChecked(true);
     }
 
 

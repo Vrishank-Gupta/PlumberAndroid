@@ -3,14 +3,18 @@ package com.vrishankgupta.plumber;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
@@ -26,13 +30,21 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+import com.vrishankgupta.plumber.util.BottomNavigationViewHelper;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivtity extends FragmentActivity implements OnMapReadyCallback,LocationListener {
 
     private GoogleMap mMap;
+    boolean flag = false;
     PlaceAutocompleteFragment placeAutoComplete;
     private LocationManager mLocationManager = null;
     private String provider = null;
+
     private Marker mCurrentPosition = null;
     Marker marker;
 
@@ -40,8 +52,7 @@ public class MainActivtity extends FragmentActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        String loc = getIntent().getExtras().getString("Loc");
-        String cust = getIntent().getExtras().getString("Cust");
+
         placeAutoComplete = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete);
 
         placeAutoComplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
@@ -49,6 +60,7 @@ public class MainActivtity extends FragmentActivity implements OnMapReadyCallbac
             public void onPlaceSelected(Place place) {
                 if (marker != null)
                     marker.remove();
+
 
                 Log.d("Maps", "Place selected: " + place.getLatLng());
                 marker = mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()).zIndex(800));
@@ -58,6 +70,7 @@ public class MainActivtity extends FragmentActivity implements OnMapReadyCallbac
 
             }
 
+
             @Override
             public void onError(Status status) {
                 Log.d("Maps", "An error occurred: " + status);
@@ -66,17 +79,29 @@ public class MainActivtity extends FragmentActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        setupBottomNavigationView();
 
+    }
+    private void setupBottomNavigationView()
+    {
+        Log.d("HomeActivity", "setupBottomNavigationView: setting up botNavView");
+        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bnve);
+        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
+        BottomNavigationViewHelper.enableNavigation(getApplicationContext(),bottomNavigationViewEx);
+        Menu menu = bottomNavigationViewEx.getMenu();
+        MenuItem menuItem = menu.getItem(2);
+        menuItem.setChecked(true);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
-        if (isProviderAvailable() && (provider != null)) {
-            locateCurrentPosition();
+            if (isProviderAvailable() && (provider != null)) {
+                locateCurrentPosition();
         }
+
+
     }
 
     private void locateCurrentPosition() {
@@ -145,11 +170,24 @@ public class MainActivtity extends FragmentActivity implements OnMapReadyCallbac
 
 
     private void addBoundaryToCurrentPosition(double lat, double lang) {
+        Geocoder myLocation = new Geocoder(getApplicationContext(), Locale.getDefault());
+        try {
+            List<Address> myList = myLocation.getFromLocation(lat,lang, 1);
+            Address address = (Address) myList.get(0);
+            String addressStr = "";
+            addressStr += address.getAddressLine(0) + ", ";
+            addressStr += address.getAddressLine(1) + ", ";
+            placeAutoComplete.setText(addressStr);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         MarkerOptions mMarkerOptions = new MarkerOptions();
         mMarkerOptions.position(new LatLng(lat, lang));
         mMarkerOptions.icon(BitmapDescriptorFactory
                 .fromResource(R.drawable.ic_location));
+
         mMarkerOptions.anchor(0.5f, 0.5f);
 
         CircleOptions mOptions = new CircleOptions()
